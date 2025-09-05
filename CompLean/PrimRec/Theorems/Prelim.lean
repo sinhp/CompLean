@@ -28,11 +28,13 @@ def curry_uncurryEquiv (A B C : Type) : (A × B → C) ≃ (A → B → C) where
 
 -- Vec Theorems
 
-/-- An explicit bijection between uniples and the underlying type. -/
-def uniplesEquiv (A : Type) : A^[1] ≃ A where
-  toFun := fun v => v 0
-  invFun := fun a => fun i => a
+/-- An explicit bijection between singletons and the underlying type. -/
+def singletonsEquivSelf (A : Type) : A^[1] ≃ A where
+  toFun := singletonToSelf
+  invFun := selfToSingleton
   left_inv v := by
+    simp [singletonToSelf]
+    unfold selfToSingleton
     funext x
     fin_cases x
     simp

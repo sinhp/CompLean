@@ -38,6 +38,25 @@ theorem const {k} : ∀ (m : ℕ), Prim k (constFun _ m)
   | 0 => zero.comp Fin.elim0 (fun i => i.elim0)
   | m + 1 => succ.comp _ fun _ => const m
 
+-- theorem comp' {n m f g} (hf : Prim m f) (hg : @Vec n m g) : Primrec' fun v => f (g v) :=
+--   (hf.comp _ hg).of_eq fun v => by simp
+
+theorem comp₁ {n m} (f : ℕ → ℕ) {g} (hf : Prim 1 f) (hg : @Vec n m g) : Primrec' fun v => f (g v) :=
+  (hf.comp _ hg).of_eq fun v => by simp
+
+
+theorem comp₁' (f : ℕ → ℕ) (hf : Prim 1 fun x => f (x 0)) {p g} (hg : Prim p g) :
+    Prim p (fun x => f (g x)) :=
+  hf.comp _ fun _ => hg
+
+
+theorem comp₁ (f : ℕ → ℕ) (hf : Prim 1 fun x => f (x 0)) {p g} (hg : Prim p g) :
+    Prim p (fun x => f (g x)) :=
+  hf.comp _ fun _ => hg
+
+theorem add : Prim 2 fun x => x 0 + x 1 :=
+  (prec (fun x ↦ x 0) (succ.comp₁ _ (tail head))).of_eq fun v => by
+    simp; induction v.head <;> simp [*, Nat.succ_add]
 
 
 

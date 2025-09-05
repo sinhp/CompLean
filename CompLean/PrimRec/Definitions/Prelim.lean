@@ -70,9 +70,9 @@ def π {A : Type} {n : ℕ} (i : Fin n) : A^[n] → A := fun v => v i
 `consVec a (a_0, a_1, ..., a_(n-1)) = (a, a_0, a_1, ..., a_(n-1))`. -/
 def consVec {A : Type} {n : ℕ} (a : A) (v : A^[n]) : A^[n+1] := Fin.cons a v
 
-def unipleToSelf {A : Type} : A^[1] → A := fun v => v 0
+def singletonToSelf {A : Type} : A^[1] → A := fun v => v 0
 
-def selfToUniple {A : Type} : A → A^[1] := fun a => fun _ => a
+def selfToSingleton {A : Type} : A → A^[1] := fun a => fun _ => a
 
 def tupleToProd (A : Type) : A^[2] → A × A := fun v => (v 0, v 1)
 
