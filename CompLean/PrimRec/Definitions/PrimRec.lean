@@ -38,8 +38,18 @@ theorem const {k} : ∀ (m : ℕ), Prim k (constFun _ m)
   | 0 => zero.comp Fin.elim0 (fun i => i.elim0)
   | m + 1 => succ.comp _ fun _ => const m
 
--- theorem comp' {n m f g} (hf : Prim m f) (hg : @Vec n m g) : Primrec' fun v => f (g v) :=
---   (hf.comp _ hg).of_eq fun v => by simp
+
+/-- A function from vectors to vectors is primitive recursive when all of its projections are. -/
+def VecFun (p n) (f : ℕ^[p] → ℕ^[n]) : Prop :=
+  ∀ i, Prim p (fun x => π i (f x))
+
+theorem vec_fun_id {n} : VecFun n n id := fun i => Prim.proj i
+
+theorem comp_vec_fun {p n f g} (g_prim : Prim n g) (f_prim : VecFun p n f) : Prim p (g ∘ f) :=
+  (g_prim.comp _ f_prim).of_eq fun v => by simp [π]
+
+theorem comp' {n m f g} (hf : Prim m f) (hg : @Vec n m g) : Primrec' fun v => f (g v) :=
+  (hf.comp _ hg).of_eq fun v => by simp
 
 theorem comp₁ {n m} (f : ℕ → ℕ) {g} (hf : Prim 1 f) (hg : @Vec n m g) : Primrec' fun v => f (g v) :=
   (hf.comp _ hg).of_eq fun v => by simp
