@@ -48,26 +48,18 @@ theorem vec_fun_id {n} : VecFun n n id := fun i => Prim.proj i
 theorem comp_vec_fun {p n f g} (g_prim : Prim n g) (f_prim : VecFun p n f) : Prim p (g ∘ f) :=
   (g_prim.comp _ f_prim).of_eq fun v => by simp [π]
 
-theorem comp' {n m f g} (hf : Prim m f) (hg : @Vec n m g) : Primrec' fun v => f (g v) :=
-  (hf.comp _ hg).of_eq fun v => by simp
+theorem comp₁ (g : ℕ → ℕ) (hg : Prim 1 fun x => g (x 0)) {p f} (hf : Prim p f) :
+    Prim p (fun x => g (f x)) :=
+  hg.comp _ fun _ => hf
 
-theorem comp₁ {n m} (f : ℕ → ℕ) {g} (hf : Prim 1 f) (hg : @Vec n m g) : Primrec' fun v => f (g v) :=
-  (hf.comp _ hg).of_eq fun v => by simp
+theorem comp₂ (f : ℕ → ℕ → ℕ) (hf : Prim 2 fun v => f (v 0) (v 1)) {n g h}
+    (hg : Prim n g) (hh : Prim n h) : Prim n fun v => f (g v) (h v) := by
+  sorry
 
+theorem add : Prim 2 fun x => x 0 + x 1 := by
+  sorry
 
-theorem comp₁' (f : ℕ → ℕ) (hf : Prim 1 fun x => f (x 0)) {p g} (hg : Prim p g) :
-    Prim p (fun x => f (g x)) :=
-  hf.comp _ fun _ => hg
-
-
-theorem comp₁ (f : ℕ → ℕ) (hf : Prim 1 fun x => f (x 0)) {p g} (hg : Prim p g) :
-    Prim p (fun x => f (g x)) :=
-  hf.comp _ fun _ => hg
-
-theorem add : Prim 2 fun x => x 0 + x 1 :=
-  (prec (fun x ↦ x 0) (succ.comp₁ _ (tail head))).of_eq fun v => by
-    simp; induction v.head <;> simp [*, Nat.succ_add]
-
-
+theorem mul : Prim 2 fun x => x 0 * x 1 := by
+  sorry
 
 end Prim
