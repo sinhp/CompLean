@@ -76,6 +76,12 @@ def π {A : Type} {n : ℕ} (i : Fin n) : A^[n] → A := fun v => v i
 `consVec a (a_0, a_1, ..., a_(n-1)) = (a, a_0, a_1, ..., a_(n-1))`. -/
 def consVec {A : Type} {n : ℕ} (a : A) (v : A^[n]) : A^[n+1] := Fin.cons a v
 
+def emptyTupleToUnit {A : Type} : A^[0] → PUnit := fun _ => PUnit.unit
+
+def unitToEmptyTuple {A : Type} : PUnit → A^[0] := fun _ => fun x => x.elim0
+
+def emptyTuple : A^[0] := fun x => x.elim0
+
 def singletonToSelf {A : Type} : A^[1] → A := fun v => v 0
 
 def selfToSingleton {A : Type} : A → A^[1] := fun a => fun _ => a
