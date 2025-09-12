@@ -83,7 +83,16 @@ theorem pred : Prim 1 fun v => (v 0).pred :=
   (prec' (proj 0) (const 0) (proj 0)).of_eq fun v => by simp; sorry
 
 theorem add : Prim 2 fun x => x 0 + x 1 := by
-  sorry
+  have g : Prim 1 (fun x => x 0) := Prim.proj 0
+  have h : Prim 3 (fun v => Nat.succ (v 1)) := comp₁ Nat.succ Prim.succ (Prim.proj 1)
+  have f := Prim.prec g h
+  refine of_eq f ?_
+  simp [Fin.tail] -- non-terminal simp, consider using "simp only [...]"
+  have r (x y : ℕ) : Nat.rec x (fun _ z => Nat.succ z) y = x + y := by
+    induction y with
+    | zero => simp
+    | succ _ _ => grind
+  grind
 
 theorem mul : Prim 2 fun x => x 0 * x 1 := by
   sorry
