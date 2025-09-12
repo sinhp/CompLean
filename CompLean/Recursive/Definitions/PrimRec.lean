@@ -85,7 +85,21 @@ theorem pred : Prim 1 fun v => (v 0).pred :=
 theorem add : Prim 2 fun x => x 0 + x 1 := by
   sorry
 
+theorem comp₂' (f : ℕ → ℕ → ℕ) (hf : Prim 2 fun v => f (v 0) (v 1)) {n g h}
+    (hg : Prim n g) (hh : Prim n h) : Prim n fun v => f (g v) (h v) := by
+  refine hf.comp (fun i v => Fin.cases (g v) (fun _ => h v) i) ?_
+  intro i
+  cases i using Fin.cases <;> assumption
+
 theorem mul : Prim 2 fun x => x 0 * x 1 := by
-  sorry
+  have g : Prim 1 (fun _ => 0) := Prim.const 0
+  have h : Prim 3 (fun v => v 1 + v 2) := comp₂' (fun x y => x + y) Prim.add (Prim.proj 1) (Prim.proj 2)
+  have f := Prim.prec g h
+  refine of_eq f ?_
+  have r (x y : ℕ) : Nat.rec 0 (fun _ z => z + y) x = x * y := by
+    induction x with
+    | zero => simp
+    | succ _ _ => grind
+  aesop -- if using `aesop` is overkill: `intro i; simp; apply r`
 
 end Prim
