@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Sina Hazratpour
 -/
 
-import CompLean.PrimRec.Definitions.Prelim
+import CompLean.Recursive.Definitions.Prelim
 
 open Vector Nat List
 
