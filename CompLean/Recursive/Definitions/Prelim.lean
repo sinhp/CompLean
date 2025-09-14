@@ -72,10 +72,6 @@ def tailOfVec {A : Type} {n : ℕ} (v : A^[n+1]) : A^[n] := fun i => v (i.succ)
 /-- The i-th projection from an n-tuple to its i-th entry, i.e. `(a_0, a_1, ..., a_(n-1)) ↦ a_i`. -/
 def π {A : Type} {n : ℕ} (i : Fin n) : A^[n] → A := fun v => v i
 
-/-- Construct an (n+1)-tuple from an element and an n-tuple, i.e.
-`consVec a (a_0, a_1, ..., a_(n-1)) = (a, a_0, a_1, ..., a_(n-1))`. -/
-def consVec {A : Type} {n : ℕ} (a : A) (v : A^[n]) : A^[n+1] := Fin.cons a v
-
 def emptyTupleToUnit {A : Type} : A^[0] → PUnit := fun _ => PUnit.unit
 
 def unitToEmptyTuple {A : Type} : PUnit → A^[0] := fun _ => fun x => x.elim0
@@ -85,6 +81,11 @@ def emptyTuple : A^[0] := fun x => x.elim0
 def singletonToSelf {A : Type} : A^[1] → A := fun v => v 0
 
 def selfToSingleton {A : Type} : A → A^[1] := fun a => fun _ => a
+
+notation "≪" a "≫" => selfToSingleton a
+
+#check ≪5≫
+
 
 def tupleToProd (A : Type) : A^[2] → A × A := fun v => (v 0, v 1)
 
@@ -98,3 +99,34 @@ def prodToTriple (A : Type) : A × A × A → A^[3] := fun p => fun i =>
   | ⟨0, _⟩ => p.1
   | ⟨1, _⟩ => p.2.1
   | ⟨2, _⟩ => p.2.2
+
+@[inherit_doc]
+infixr:67 " <:> " => Fin.cons
+
+/-- Construct an (n+1)-tuple from an element and an n-tuple, i.e.
+`consVec a (a_0, a_1, ..., a_(n-1)) = (a, a_0, a_1, ..., a_(n-1))`. -/
+def consVec {A : Type} {n : ℕ} (a : A) (v : A^[n]) : A^[n+1] := a <:> v
+
+def uncurry₂ : (ℕ → ℕ → ℕ) → (ℕ^[2] → ℕ) := fun f v => f (v 0) (v 1)
+
+namespace Nat
+
+def add' : ℕ^[2] → ℕ := fun v => v 0 + v 1
+
+def mul' : ℕ^[2] → ℕ := fun v => v 0 * v 1
+
+def pred' : ℕ^[1] → ℕ := fun v => v 0 - 1
+
+def sub' : ℕ^[2] → ℕ := fun v => v 0 - v 1
+
+def max' : ℕ^[2] → ℕ := fun v => max (v 0) (v 1)
+
+def min' : ℕ^[2] → ℕ := fun v => min (v 0) (v 1)
+
+end Nat
+
+#eval pred' (selfToSingleton 1)
+
+#eval sub' (consVec 5 (selfToSingleton 3))
+
+#eval max' (consVec 5 (selfToSingleton 4))
