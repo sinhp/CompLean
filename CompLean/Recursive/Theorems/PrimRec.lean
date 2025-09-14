@@ -19,7 +19,9 @@ protected theorem nil {n} : VecFun n 0 (fun _ => emptyTuple) := fun i => i.elim0
 protected theorem cons {n m f g} (hf : Prim n f) (hg : VecFun n m g) :
     VecFun n (m + 1) (fun v => (f v) <:> (g v)) := by
   intro i
-  sorry
+  cases i using Fin.cases with
+  | zero => assumption
+  | succ x => exact hg ⟨x, x.isLt⟩
 
 theorem vec_fun_id {n} : VecFun n n id := fun i => Prim.proj i
 
