@@ -117,16 +117,28 @@ def mul' : ℕ^[2] → ℕ := fun v => v 0 * v 1
 
 def pred' : ℕ^[1] → ℕ := fun v => v 0 - 1
 
+def neg' : ℕ^[1] → ℕ := fun v => 1 - v 0
+
+def sgn' : ℕ^[1] → ℕ := fun v => 1 - (1 - v 0)
+
 def sub' : ℕ^[2] → ℕ := fun v => v 0 - v 1
 
 def max' : ℕ^[2] → ℕ := fun v => max (v 0) (v 1)
 
 def min' : ℕ^[2] → ℕ := fun v => min (v 0) (v 1)
 
+def eq' : ℕ^[2] → ℕ := fun v => if v 0 = v 1 then 1 else 0
+
 end Nat
 
 #eval pred' (selfToSingleton 1)
 
+#eval neg' (selfToSingleton 1)
+
+#eval sgn' (selfToSingleton 1)
+
 #eval sub' (consVec 5 (selfToSingleton 3))
 
 #eval max' (consVec 5 (selfToSingleton 4))
+
+#eval eq' (consVec 3 (selfToSingleton 3))
