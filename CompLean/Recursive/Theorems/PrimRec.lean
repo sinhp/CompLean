@@ -75,7 +75,15 @@ theorem mul : Prim 2 mul' := by
   aesop -- if using `aesop` is overkill: `intro i; simp; apply r`
 
 theorem sub : Prim 2 sub' := by
-  sorry
+  have g : Prim 1 (fun v => v 0) := Prim.proj 0
+  have h : Prim 3 (fun v => v 1 - 1) := comp₁ Nat.pred Prim.pred (Prim.proj 1)
+  have f := comp_vec_fun (Prim.prec g h) ((Prim.proj 1).cons ((Prim.proj (0 : Fin 2)).cons Prim.nil))
+  refine of_eq f ?_
+  simp [sub', π]
+  intro p
+  induction p 1 with
+  | zero => rfl
+  | succ => grind
 
 theorem max : Prim 2 max' := by
   sorry
