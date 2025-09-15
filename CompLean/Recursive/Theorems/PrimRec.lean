@@ -78,9 +78,17 @@ theorem sub : Prim 2 sub' := by
   sorry
 
 theorem max : Prim 2 max' := by
-  sorry
+  -- max(x, y) = add(x, sub(y, x))
+  have f : Prim 2 (fun v => Nat.add (v 0) (Nat.sub (v 1) (v 0))) :=
+    comp₂' Nat.add Prim.add (Prim.proj 0) (comp₂' Nat.sub Prim.sub (Prim.proj 1) (Prim.proj 0))
+  refine of_eq f ?_
+  grind [max']
 
 theorem min : Prim 2 min' := by
-  sorry
+  -- min(x, y) = sub(x, sub(x, y))
+  have f : Prim 2 (fun v => Nat.sub (v 0) (Nat.sub (v 0) (v 1))) :=
+    comp₂' Nat.sub Prim.sub (Prim.proj 0) (comp₂' Nat.sub Prim.sub (Prim.proj 0) (Prim.proj 1))
+  refine of_eq f ?_
+  grind [min']
 
 end Prim
