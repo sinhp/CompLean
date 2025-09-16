@@ -127,6 +127,8 @@ def max' : ℕ^[2] → ℕ := fun v => max (v 0) (v 1)
 
 def min' : ℕ^[2] → ℕ := fun v => min (v 0) (v 1)
 
+def dist' : ℕ^[2] → ℕ := fun v => max (v 0 - v 1) (v 1 - v 0)
+
 def eq' : ℕ^[2] → ℕ := fun v => if v 0 = v 1 then 1 else 0
 
 end Nat
@@ -140,5 +142,7 @@ end Nat
 #eval sub' (consVec 5 (selfToSingleton 3))
 
 #eval max' (consVec 5 (selfToSingleton 4))
+
+#eval dist' (consVec 0 (selfToSingleton 7))
 
 #eval eq' (consVec 3 (selfToSingleton 3))
