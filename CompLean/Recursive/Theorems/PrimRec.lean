@@ -1,5 +1,5 @@
 import CompLean.Recursive.Definitions.PrimRec
-import Mathlib.Tactic.Basic
+import Mathlib.Tactic
 
 namespace Prim
 
@@ -56,29 +56,26 @@ theorem pred : Prim 1 pred' :=
   | succ => rfl
 
 theorem add : Prim 2 add' := by
-  have g : Prim 1 (fun x => x 0) := Prim.proj 0
-  have h : Prim 3 (fun v => Nat.succ (v 1)) := comp₁ Nat.succ Prim.succ (Prim.proj 1)
+  have g : Prim 1 (fun v => v 0) := Prim.proj 0
+  have h : Prim 3 (fun v => v 1 + 1) := comp₁ Nat.succ Prim.succ (Prim.proj 1)
   have f := Prim.prec g h
   refine of_eq f ?_
-  simp only [Fin.tail]
-  have r (x y : ℕ) : Nat.rec x (fun _ z => Nat.succ z) y = x + y := by
-    induction y with
-    | zero => simp
-    | succ _ _ => grind
   simp [add']
-  intro i
-  simp_all [Nat.add_comm]
+  intro p
+  induction p 0 with
+  | zero => abel
+  | succ => simp_all; abel
 
 theorem mul : Prim 2 mul' := by
-  have g : Prim 1 (fun _ => 0) := Prim.const 0
+  have g : Prim 1 (fun v => 0) := Prim.const 0
   have h : Prim 3 (fun v => v 1 + v 2) := comp₂' (fun x y => x + y) Prim.add (Prim.proj 1) (Prim.proj 2)
   have f := Prim.prec g h
   refine of_eq f ?_
-  have r (x y : ℕ) : Nat.rec 0 (fun _ z => z + y) x = x * y := by
-    induction x with
-    | zero => simp
-    | succ _ _ => grind
-  aesop -- if using `aesop` is overkill: `intro i; simp; apply r`
+  simp [mul']
+  intro p
+  induction p 0 with
+  | zero => noncomm_ring
+  | succ => simp_all; noncomm_ring
 
 theorem sub : Prim 2 sub' := by
   have g : Prim 1 (fun v => v 0) := Prim.proj 0
