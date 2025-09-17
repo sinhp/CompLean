@@ -47,7 +47,11 @@ theorem prec' {n f g h} (f_prim : Prim n f) (g_prim : Prim n g) (h_prim : Prim (
   simpa using comp_vec_fun (prec g_prim h_prim) (f_prim.cons vec_fun_id)
 
 theorem pred : Prim 1 pred' :=
-  (prec' (proj 0) (const 0) (proj 0)).of_eq fun v => by simp; sorry
+  (prec' (proj 0) (const 0) (proj 0)).of_eq fun v => by
+  simp [pred', π]
+  induction v 0 with
+  | zero => rfl
+  | succ => rfl
 
 theorem add : Prim 2 add' := by
   have g : Prim 1 (fun x => x 0) := Prim.proj 0
