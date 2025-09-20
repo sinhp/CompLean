@@ -21,7 +21,7 @@ protected theorem cons {n m f g} (hf : Prim n f) (hg : VecFun n m g) :
   intro i
   cases i using Fin.cases with
   | zero => assumption
-  | succ x => exact hg ⟨x, x.isLt⟩
+  | succ => exact hg _
 
 theorem vec_fun_id {n} : VecFun n n id := fun i => Prim.proj i
 
