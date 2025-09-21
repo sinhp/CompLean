@@ -26,7 +26,9 @@ protected theorem cons {n m f g} (hf : Prim n f) (hg : VecFun n m g) :
 theorem vec_fun_id {n} : VecFun n n id := fun i => Prim.proj i
 
 theorem comp_vec_fun {p n f g} (g_prim : Prim n g) (f_prim : VecFun p n f) : Prim p (g ∘ f) :=
-  (g_prim.comp _ f_prim).of_eq fun v => by simp [π]
+  (g_prim.comp _ f_prim).of_eq fun v => by
+  unfold π
+  rfl
 
 /-- The compostion of a primitive recursive `f : ℕ^[p] → ℕ` with a primitive recursive vector function
 `g : ℕ → ℕ` is primitive recursive. -/
@@ -50,17 +52,15 @@ theorem prec' {n f g h} (f_prim : Prim n f) (g_prim : Prim n g) (h_prim : Prim (
 
 theorem pred : Prim 1 pred' :=
   (prec' (proj 0) (const 0) (proj 0)).of_eq fun v => by
-  simp [pred', π]
-  induction v 0 with
-  | zero => rfl
-  | succ => rfl
+  unfold pred' π
+  induction v 0 <;> rfl
 
 theorem add : Prim 2 add' := by
   have g : Prim 1 (fun v => v 0) := Prim.proj 0
   have h : Prim 3 (fun v => v 1 + 1) := comp₁ Nat.succ Prim.succ (Prim.proj 1)
   have f := Prim.prec g h
   refine of_eq f ?_
-  simp [add']
+  unfold add'
   intro p
   induction p 0 with
   | zero => abel
@@ -71,7 +71,7 @@ theorem mul : Prim 2 mul' := by
   have h : Prim 3 (fun v => v 1 + v 2) := comp₂' (fun x y => x + y) Prim.add (Prim.proj 1) (Prim.proj 2)
   have f := Prim.prec g h
   refine of_eq f ?_
-  simp [mul']
+  unfold mul'
   intro p
   induction p 0 with
   | zero => noncomm_ring
@@ -82,7 +82,8 @@ theorem sub : Prim 2 sub' := by
   have h : Prim 3 (fun v => v 1 - 1) := comp₁ Nat.pred Prim.pred (Prim.proj 1)
   have f := comp_vec_fun (Prim.prec g h) ((Prim.proj 1).cons ((Prim.proj (0 : Fin 2)).cons Prim.nil))
   refine of_eq f ?_
-  simp [sub', π]
+  unfold π
+  simp [sub']
   intro p
   induction p 1 with
   | zero => rfl
