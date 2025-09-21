@@ -7,15 +7,15 @@ Authors: Sina Hazratpour
 import CompLean.Recursive.Definitions.Prelim
 import CompLean.Recursive.Definitions.PrimRec
 
-def ack : ℕ → ℕ → ℕ
+def ack' : ℕ → ℕ → ℕ
   | 0, n => n + 1
-  | m + 1, 0 => ack m 1
-  | m + 1, n + 1 => ack m (ack (m + 1) n)
+  | m + 1, 0 => ack' m 1
+  | m + 1, n + 1 => ack' m (ack' (m + 1) n)
 
-#eval ack 1 2
+#eval ack' 1 2
 
-#eval ack 2 2
+#eval ack' 2 2
 
-#eval ack 3 2
+#eval ack' 3 2
 
-#eval ack 3 3
+#eval ack' 3 3
