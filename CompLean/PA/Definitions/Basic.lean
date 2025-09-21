@@ -76,6 +76,12 @@ instance : peano.Structure M where
 @[simp] theorem funMap_add {v} :
     Structure.opMap (L := peano) (M := M) PAOps.add v = v 0 + v 1 := rfl
 
+@[simp] theorem funMap_succ {v} :
+    Structure.opMap (L := peano) (M := M) PAOps.succ v = v 0 + 1 := rfl
+
+@[simp] theorem funMap_mul {v} :
+    Structure.opMap (L := peano) (M := M) PAOps.mul v = v 0 * v 1 := rfl
+
 @[simp] theorem realize_zero : Term.realize v (0 : peano.Term V) = 0 := rfl
 
 @[simp] theorem realize_one : Term.realize v (1 : peano.Term V) = 1 := rfl
