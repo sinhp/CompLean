@@ -50,10 +50,19 @@ theorem prec' {n f g h} (f_prim : Prim n f) (g_prim : Prim n g) (h_prim : Prim (
     Prim n fun v => (f v).rec (g v) fun y IH : ℕ => h (y <:> IH <:> v) := by
   simpa using comp_vec_fun (prec g_prim h_prim) (f_prim.cons vec_fun_id)
 
-theorem pred : Prim 1 pred' :=
-  (prec' (proj 0) (const 0) (proj 0)).of_eq fun v => by
-  unfold pred' π
-  induction v 0 <;> rfl
+theorem pred : Prim 1 pred' := by
+  have g : Prim 0 _ := Prim.const 0
+  have h : Prim 2 _ := Prim.proj 0
+  have f := Prim.prec g h
+  refine f.of_eq ?_
+  unfold pred'
+  intro p
+  induction p 0 <;> rfl
+
+theorem pred_minimal : Prim 1 pred' := (prec zero (proj 0)).of_eq <| by
+  unfold pred'
+  intro p
+  induction p 0 <;> rfl
 
 theorem neg : Prim 1 neg' := sorry
 
