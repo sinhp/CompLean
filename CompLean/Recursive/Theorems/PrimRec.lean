@@ -92,6 +92,13 @@ theorem mul : Prim 2 mul' := by
   | zero => noncomm_ring
   | succ => simp_all; noncomm_ring
 
+theorem mul_minimal : Prim 2 mul' := (prec (const 0) (comp₂' _ add (proj 1) (proj 2))).of_eq <| by
+  unfold mul'
+  intro p
+  induction p 0 with
+  | zero => noncomm_ring
+  | succ => simp_all; noncomm_ring
+
 theorem sub : Prim 2 sub' := by
   have g : Prim 1 (fun v => v 0) := Prim.proj 0
   have h : Prim 3 (fun v => v 1 - 1) := comp₁ Nat.pred Prim.pred (Prim.proj 1)
