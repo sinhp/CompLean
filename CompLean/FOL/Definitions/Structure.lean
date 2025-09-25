@@ -1,84 +1,8 @@
-import Mathlib.Tactic
-import Mathlib.Data.Fin.VecNotation
+import CompLean.FOL.Definitions.Term
 
-import Mathlib
-
-universe u v u' v' w w' u₁ v₁
-
-namespace FOL
-
-/-! # Languages and Structures -/
-
-abbrev Arity := ℕ
-
-/-- A __single sorted first-order language__ consists of a type of operation symbols of every natural-number arity and a
-  type of relation symbols of every natural-number arity. -/
-@[nolint checkUnivs]
-structure Language where
-  /-- For every arity, a `Type*` of function symbols of that arity -/
-  Ops : Arity → Type u
-  /-- For every arity, a `Type*` of relation symbols of that arity -/
-  Rels : Arity → Type v
-
-namespace Language
+namespace FOL.Language
 
 variable (L : Language.{u, v})
-
-/-- A language is _algebraic_ when it has no relation symbols. -/
-abbrev IsAlgebraic : Prop := ∀ n, IsEmpty (L.Rels n)
-
-/-- A language is _relational_ when it has no function symbols. -/
-abbrev IsRelational : Prop := ∀ n, IsEmpty (L.Ops n)
-
-/-- The type of symbols in a given language. -/
-abbrev Symbols :=
-  (Σ l, L.Ops l) ⊕ (Σ l, L.Rels l)
-
-/-- The type of constants in a given language. -/
-protected abbrev Constants :=
-  L.Ops 0
-
-/-- The type of propositions in a given language. -/
-protected abbrev Propositions :=
-  L.Rels 0
-
-/-- Passes a `DecidableEq` instance on a type of operation symbols through the  `Language`
-constructor. -/
-instance instDecidableEqFunctions {m : ℕ → Type*} {R : ℕ → Type*} (n : ℕ) [DecidableEq (m n)] :
-    DecidableEq ((⟨m, R⟩ : Language).Ops n) := inferInstance
-
-/-- A term on `I` is either
-- `v i`, i.e. a variable indexed by an element of `i : I`, or
-- or `m t₁ ... tₙ`, i.e. an operation symbol `m` applied to simpler terms `t₁, ..., tₙ`. -/
-inductive Term (I : Type u') : Type max u u'
-  | var (i : I) : Term I
-  | op {n : Arity} (_m : L.Ops n) (_ts : Fin n → Term I) : Term I
-export Term (var op)
-
-variable {I J : Type u₁}
-
-variable {L}
-
-/-- A constant symbol can be seen as a term. -/
-def Constants.term (c : L.Constants) : L.Term I :=
-  op c default
-
-/-- Applies a unary function to a term. -/
-def Ops.apply₁ (f : L.Ops 1) (t : L.Term I) : L.Term I :=
-  op f ![t]
-
-/-- Applies a binary function to two terms. -/
-def Ops.apply₂ (f : L.Ops 2) (t₁ t₂ : L.Term I) : L.Term I :=
-  op f ![t₁, t₂]
-
-/-- Substitutes the variables in a given term with terms. -/
-@[simp]
-def Term.subst : L.Term I → (I → L.Term J) → L.Term J
-  | var a, tf => tf a
-  | op f ts, tf => op f fun i => (ts i).subst tf
-
-/-- The type of n-tuples of elements of a given type `M`. -/
-abbrev tuple (n : Arity) (M : Type w) := Fin n → M
 
 /-- A first-order __structure__ on a type `M`, considered as the base (aka underlying set) of the strucuture, consists of interpretations of all
 the symbols in a given language. Each operation of arity `n` is interpreted as a function sending tuples of length `n` to `M`, and
@@ -164,6 +88,4 @@ def constantMap (c : L.Constants) : M := opMap c (default : tuple 0 M)
 -- instance : CoeTC L.Constants M :=
 --   ⟨constantMap⟩
 
-end Language
-
-end FOL
+end FOL.Language
