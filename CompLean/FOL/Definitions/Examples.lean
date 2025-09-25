@@ -187,7 +187,7 @@ the length of the list. -/
 def monoidStrHomOfNatList (α : Type*) : addMonoid.Hom (List α) ℕ where
   toFun := List.length
   map_op' {n}
-    | .add => (fun x => List.length_append (x 1) (x 2))
+    | .add => (fun x => List.length_append)
     | .zero => (fun _ => List.length_nil)
 
 section

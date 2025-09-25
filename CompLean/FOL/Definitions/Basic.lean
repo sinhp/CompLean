@@ -42,6 +42,11 @@ protected abbrev Constants :=
 protected abbrev Propositions :=
   L.Rels 0
 
+/-- Passes a `DecidableEq` instance on a type of operation symbols through the  `Language`
+constructor. -/
+instance instDecidableEqFunctions {m : ℕ → Type*} {R : ℕ → Type*} (n : ℕ) [DecidableEq (m n)] :
+    DecidableEq ((⟨m, R⟩ : Language).Ops n) := inferInstance
+
 /-- A term on `I` is either
 - `v i`, i.e. a variable indexed by an element of `i : I`, or
 - or `m t₁ ... tₙ`, i.e. an operation symbol `m` applied to simpler terms `t₁, ..., tₙ`. -/
@@ -92,10 +97,12 @@ variable (M : Type w) (N : Type w') [L.Structure M] [L.Structure N]
 
 open Structure
 
+variable {M}
+
 /-- A term `t` with variables indexed by `I` can be evaluated by giving a value to each variable. -/
 def Term.realize (v : I → M) : ∀ _t : L.Term I, M
   | var k => v k
-  | op f ts => opMap f fun i => (ts i).realize v
+  | op m ts => opMap m fun i => (ts i).realize v
 
 open Structure
 
@@ -103,7 +110,7 @@ open Structure
 def Inhabited.trivialStructure [Inhabited M] : L.Structure M :=
   ⟨default, default⟩
 
-#reduce Inhabited.trivialStructure
+variable (M)
 
 /-- A homomorphism between first-order structures is a function that commutes with the
   interpretations of Operations and maps tuples in one structure where a given relation is sati to
@@ -148,7 +155,7 @@ structure Equiv extends M ≃ N where
 @[inherit_doc]
 scoped[FirstOrder] notation:25 A " ≃[" L "] " B => FirstOrder.Language.Equiv L A B
 
-variable {M N} {P : Type*} [L.Structure P] {Q : Type*} [L.Structure Q]
+variable {N} {P : Type*} [L.Structure P] {Q : Type*} [L.Structure Q]
 
 /-- Interpretation of a constant symbol -/
 @[coe]
