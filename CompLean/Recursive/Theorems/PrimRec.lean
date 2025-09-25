@@ -55,6 +55,12 @@ theorem pred : Prim 1 pred' :=
   unfold pred' π
   induction v 0 <;> rfl
 
+theorem neg : Prim 1 neg' := sorry
+
+theorem sgn : Prim 1 sgn' := sorry
+
+theorem factorial : Prim 1 factorial' := sorry
+
 theorem add : Prim 2 add' := by
   have g : Prim 1 (fun v => v 0) := Prim.proj 0
   have h : Prim 3 (fun v => v 1 + 1) := comp₁ Nat.succ Prim.succ (Prim.proj 1)
@@ -102,5 +108,11 @@ theorem min : Prim 2 min' := by
     comp₂' Nat.sub Prim.sub (Prim.proj 0) (comp₂' Nat.sub Prim.sub (Prim.proj 0) (Prim.proj 1))
   refine of_eq f ?_
   grind [min']
+
+theorem dist : Prim 2 dist' := sorry
+
+theorem eq : Prim 2 eq' := sorry
+
+theorem pow : Prim 2 pow' := sorry
 
 end Prim

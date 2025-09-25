@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Sina Hazratpour
 -/
 
+import Mathlib.Data.Nat.Factorial.Basic
 import Mathlib.Data.Nat.Notation
 import Mathlib.Data.Fin.Tuple.Basic
 
@@ -121,6 +122,8 @@ def neg' : ℕ^[1] → ℕ := fun v => 1 - v 0
 
 def sgn' : ℕ^[1] → ℕ := fun v => 1 - (1 - v 0)
 
+def factorial' : ℕ^[1] → ℕ := fun v => Nat.factorial (v 0)
+
 def sub' : ℕ^[2] → ℕ := fun v => v 0 - v 1
 
 def max' : ℕ^[2] → ℕ := fun v => max (v 0) (v 1)
@@ -130,6 +133,8 @@ def min' : ℕ^[2] → ℕ := fun v => min (v 0) (v 1)
 def dist' : ℕ^[2] → ℕ := fun v => max (v 0 - v 1) (v 1 - v 0)
 
 def eq' : ℕ^[2] → ℕ := fun v => if v 0 = v 1 then 1 else 0
+
+def pow' : ℕ^[2] → ℕ := fun v => Nat.pow (v 0) (v 1)
 
 end Nat
 
