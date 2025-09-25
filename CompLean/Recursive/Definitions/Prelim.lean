@@ -134,15 +134,19 @@ def eq' : ℕ^[2] → ℕ := fun v => if v 0 = v 1 then 1 else 0
 end Nat
 
 #eval pred' (selfToSingleton 1)
+#eval pred' ≪1≫
 
-#eval neg' (selfToSingleton 1)
+#eval neg' ≪1≫
 
-#eval sgn' (selfToSingleton 1)
+#eval sgn' ≪1≫
 
 #eval sub' (consVec 5 (selfToSingleton 3))
+#eval sub' (consVec 5 ≪3≫)
+#eval sub' (5 <:> ≪3≫)
+#eval sub' (5 <:> ≪3≫)
 
-#eval max' (consVec 5 (selfToSingleton 4))
+#eval max' (5 <:> ≪4≫)
 
-#eval dist' (consVec 0 (selfToSingleton 7))
+#eval dist' (0 <:> ≪7≫)
 
-#eval eq' (consVec 3 (selfToSingleton 3))
+#eval eq' (3 <:> ≪3≫)
