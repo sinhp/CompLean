@@ -1,4 +1,4 @@
-import CompLean.FOL.Definitions.Basic
+import CompLean.FOL.Definitions.Formula
 
 import Mathlib
 

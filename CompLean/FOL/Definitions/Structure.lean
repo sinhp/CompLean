@@ -1,14 +1,15 @@
 import CompLean.FOL.Definitions.Term
+import Mathlib.Data.Fin.VecNotation
+--import Mathlib -- why do we need this? -- gives weird errors otherwise
 
-namespace FOL.Language
 
-variable (L : Language.{u, v})
+namespace FOL.Lang
 
 /-- A first-order __structure__ on a type `M`, considered as the base (aka underlying set) of the strucuture, consists of interpretations of all
 the symbols in a given language. Each operation of arity `n` is interpreted as a function sending tuples of length `n` to `M`, and
 a relation of arity `n` a set of the tuples of length `n`.  -/
 @[ext]
-class Structure (M : Type w) where
+class Structure (L : Lang.{u,v}) (M : Type w) where
   /-- Interpretation of the operation symbols -/
   opMap : ∀ {n}, L.Ops n → (tuple n M) → M := by
     exact fun {n} => isEmptyElim -- if there is no function symbols of arity `n`, return nothing by default.
@@ -16,12 +17,13 @@ class Structure (M : Type w) where
   relMap : ∀ {n}, L.Rels n → Set (tuple n M) := by
     exact fun {n} => isEmptyElim -- if there is no relation symbols of arity `n`, return nothing by default.
 
+variable (L : Lang.{u,v})
 
 variable (M : Type w) (N : Type w') [L.Structure M] [L.Structure N]
 
 open Structure
 
-variable {M}
+variable {M} {I : Type u'}
 
 /-- A term `t` with variables indexed by `I` can be evaluated by giving a value to each variable. -/
 def Term.realize (v : I → M) : ∀ _t : L.Term I, M
@@ -30,7 +32,6 @@ def Term.realize (v : I → M) : ∀ _t : L.Term I, M
 
 open Structure
 
-/-- Used for defining `FirstOrder.Language.Theory.ModelType.instInhabited`. -/
 def Inhabited.trivialStructure [Inhabited M] : L.Structure M :=
   ⟨default, default⟩
 
@@ -51,7 +52,7 @@ structure Hom where
     intros; trivial
 
 @[inherit_doc]
-scoped[FirstOrder] notation:25 A " →[" L "] " B => FirstOrder.Language.Hom L A B
+scoped[FOL] notation:25 A " →[" L "] " B => FOL.Lang.Hom L A B
 
 /-- An embedding of first-order structures is an embedding that commutes with the
   interpretations of functions and relations. -/
@@ -64,7 +65,7 @@ structure Embedding extends M ↪ N where
     intros; trivial
 
 @[inherit_doc]
-scoped[FirstOrder] notation:25 A " ↪[" L "] " B => FirstOrder.Language.Embedding L A B
+scoped[FOL] notation:25 A " ↪[" L "] " B => FOL.Lang.Embedding L A B
 
 /-- An equivalence of first-order structures is an equivalence that commutes with the
   interpretations of functions and relations. -/
@@ -77,7 +78,7 @@ structure Equiv extends M ≃ N where
     intros; trivial
 
 @[inherit_doc]
-scoped[FirstOrder] notation:25 A " ≃[" L "] " B => FirstOrder.Language.Equiv L A B
+scoped[FOL] notation:25 A " ≃[" L "] " B => FOL.Lang.Equiv L A B
 
 variable {N} {P : Type*} [L.Structure P] {Q : Type*} [L.Structure Q]
 
@@ -88,4 +89,4 @@ def constantMap (c : L.Constants) : M := opMap c (default : tuple 0 M)
 -- instance : CoeTC L.Constants M :=
 --   ⟨constantMap⟩
 
-end FOL.Language
+end FOL.Lang
