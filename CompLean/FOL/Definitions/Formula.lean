@@ -227,17 +227,20 @@ def relabel {n : ℕ} (g : I → J ⊕ (Fin n)) {k} (φ : L.BdForm I k) : L.BdFo
 
 end BdForm
 
-@[inherit_doc] scoped[FirstOrder] infixl:88 " =' " => FOL.Lang.Term.bdEqual
+/-- `νn` is notation for the `n`-th free variable of a bounded formula. -/
+scoped[FOL] prefix:arg "ν" => FOL.Lang.Term.var ∘ Sum.inr
 
-@[inherit_doc] scoped[FirstOrder] infixr:62 " ⟹ " => FOL.Lang.BdForm.imp
+@[inherit_doc] scoped[FOL] infixl:88 " =' " => FOL.Lang.Term.bdEqual
 
-@[inherit_doc] scoped[FirstOrder] prefix:110 "∀'" => FOL.Lang.BdForm.all
+@[inherit_doc] scoped[FOL] infixr:62 " ⟹ " => FOL.Lang.BdForm.imp
 
-@[inherit_doc] scoped[FirstOrder] prefix:arg "∼" => FOL.Lang.BdForm.not
+@[inherit_doc] scoped[FOL] prefix:110 "∀'" => FOL.Lang.BdForm.all
 
-@[inherit_doc] scoped[FirstOrder] infixl:61 " ⇔ " => FOL.Lang.BdForm.iff
+@[inherit_doc] scoped[FOL] prefix:arg "∼" => FOL.Lang.BdForm.not
 
-@[inherit_doc] scoped[FirstOrder] prefix:110 "∃'" => FOL.Lang.BdForm.ex
+@[inherit_doc] scoped[FOL] infixl:61 " ⇔ " => FOL.Lang.BdForm.iff
+
+@[inherit_doc] scoped[FOL] prefix:110 "∃'" => FOL.Lang.BdForm.ex
 
 namespace Form
 
@@ -247,8 +250,54 @@ variable {J : Type u''}
 def relabel (σ : I → J) : L.Form I → L.Form J :=
   @BdForm.relabel _ _ _ 0 (Sum.inl ∘ σ) 0
 
+/-- The graph of an operation as a first-order formula.
+`graph m` represents the formula `y = m x₁ ... xₙ`, where `y` is indexed by `0 : Fin (n + 1)`
+-/
+def graph (m : L.Ops n) : L.Form (Fin (n + 1)) :=
+  Term.equal (var 0) (op m fun i => var i.succ)
+
 end Form
 
+namespace Rels
+
+variable (r : L.Rels 2)
+
+/-- The sentence indicating that a basic relation symbol is reflexive. -/
+protected def reflexive : L.Sentence :=
+  ∀'r.bdForm₂ (ν 0) ν 0
+
+/-- The sentence indicating that a basic relation symbol is irreflexive. -/
+protected def irreflexive : L.Sentence :=
+  ∀'∼(r.bdForm₂ (ν 0) ν 0)
+
+/-- The sentence indicating that a basic relation symbol is symmetric. -/
+protected def symmetric : L.Sentence :=
+  ∀'∀'(r.bdForm₂ (ν 0) ν 1 ⟹ r.bdForm₂ (ν 1) ν 0)
+
+/-- The sentence indicating that a basic relation symbol is antisymmetric. -/
+protected def antisymmetric : L.Sentence :=
+  ∀'∀'(r.bdForm₂ (ν 0) ν 1 ⟹ r.bdForm₂ (ν 1) ν 0 ⟹ Term.bdEqual (ν 0) ν 1)
+
+/-- The sentence indicating that a basic relation symbol is transitive. -/
+protected def transitive : L.Sentence :=
+  ∀'∀'∀'(r.bdForm₂ (ν 0) (ν 1) ⟹ r.bdForm₂ (ν 1) (ν 2) ⟹ r.bdForm₂ (ν 0) (ν 2))
+
+/-- The sentence indicating that a basic relation symbol is total. -/
+protected def total : L.Sentence :=
+  ∀'∀'(r.bdForm₂ (ν 0) (ν 1) ⊔ r.bdForm₂ (ν 1) (ν 0))
+
+end Rels
+
+namespace BdForm
+
+/-- An atomic formula is either equality or a relation symbol applied to terms.
+Note that `⊥` and `⊤` are not considered atomic in this convention. -/
+inductive IsAtomic : L.BdForm I n → Prop
+  | equal (t₁ t₂ : L.Term (I ⊕ (Fin n))) : IsAtomic (t₁.bdEqual t₂)
+  | rel {m : ℕ} (R : L.Rels m) (ts : Fin m → L.Term (I ⊕ (Fin n))) :
+    IsAtomic (R.bdForm ts)
+
+end BdForm
 
 
 end FOL.Lang

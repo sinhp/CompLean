@@ -4,7 +4,7 @@ import Mathlib
 
 universe u v
 
-namespace FOL.Language
+namespace FOL.Lang
 
 /-- The inductive type of operation symbols for the language of monoids.
 It contains the operations (*, 1). -/
@@ -52,30 +52,30 @@ inductive SemiringModuleOp (R : Type u) : Arity → Type u
 scoped notation "∅" => fun _ => PEmpty
 
 /-- The language of monoids contains the operations (*, 1) and no relation. -/
-def monoid : Language where
+def monoid : Lang where
   Ops := MonoidOps
   Rels := fun _ => Empty
   deriving IsAlgebraic
 
 /-- The language of additive monoids contains the operations (+, 0) and no relation. -/
-def addMonoid : Language.{u,v} where
+def addMonoid : Lang.{u,v} where
   Ops := AddMonoidOps
   Rels := ∅
   deriving IsAlgebraic
 
 /-- The language of groups contains the operations (*, 1, ⁻¹) and no relation. -/
-def group : Language where
+def group : Lang where
   Ops := GroupOps
   Rels := ∅
   deriving IsAlgebraic
 
-def addGroup : Language where
+def addGroup : Lang where
   Ops := AddGroupOps
   Rels := ∅
   deriving IsAlgebraic
 
 /-- The language of rings contains the operations (+,*,-,0,1) and no relation. -/
-def ring : Language where
+def ring : Lang where
   Ops := RingOps
   Rels := ∅
   deriving IsAlgebraic
@@ -94,7 +94,7 @@ This suggests we should think of an algebraic theory as a kind of generalized se
 
 set_option trace.Meta.isDefEq true in
 /-- The language of semiring modules over a semiring `R` contains the operations (+, 0, -, r • x) for every `r : R` and no relation. -/
-def semiringModule (R : Type u) : Language where
+def semiringModule (R : Type u) : Lang where
   Ops := SemiringModuleOp R
   Rels := ∅
   --deriving IsAlgebraic -- note: this is not working!
@@ -108,7 +108,7 @@ instance (R : Type u) : IsAlgebraic (semiringModule R) := by
 inductive preorderRel : Arity → Type
   | le : preorderRel 2
 
-def preorder : Language where
+def preorder : Lang where
   Ops := fun _ => Empty
   Rels := preorderRel
   deriving IsRelational
@@ -117,7 +117,7 @@ inductive preOrderWithTopRel : Arity → Type
   | le : preOrderWithTopRel 2
   | top : preOrderWithTopRel 0
 
-def preOrderWithTop : Language where
+def preOrderWithTop : Lang where
   Ops := fun _ => Empty
   Rels := preOrderWithTopRel
   deriving IsRelational
@@ -128,7 +128,7 @@ inductive graphRel : ℕ → Type
   deriving DecidableEq
 
 /-- The language consisting of a single relation representing adjacency. -/
-def graph : Language where
+def graph : Lang where
   Ops := fun _ => Empty
   Rels := graphRel
   deriving IsRelational
@@ -178,7 +178,7 @@ def monoidStrOfListMerge (α : Type*) (le : α → α → Bool := by exact fun a
     | .one => (fun _ => [])
 
 /-- Any simple graph can be thought of as a structure in the language of graphs. -/
-def graphStrOfSimpleGraph {V : Type*} (G : SimpleGraph V) : Language.graph.Structure V where
+def graphStrOfSimpleGraph {V : Type*} (G : SimpleGraph V) : Lang.graph.Structure V where
   relMap | .adj => (fun x => G.Adj (x 0) (x 1))
 
 /-- The monoid structure homomorphism from list monoid (with append operation) to natural
@@ -232,5 +232,5 @@ local infixl:52 " * " => RingOps.mul.apply₂
 end
 
 
-end Language
+end Lang
 end FOL

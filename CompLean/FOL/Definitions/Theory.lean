@@ -1,14 +1,11 @@
 import CompLean.FOL.Definitions.Formula
 
-namespace FOL.Language
+namespace FOL.Lang
 
-variable (L : Language.{u, v})
+variable (L : Lang.{u, v})
 
 /-- A theory is a set of sentences. -/
 abbrev Theory :=
   Set L.Sentence
 
-
-
-
-end FOL.Language
+end FOL.Lang
