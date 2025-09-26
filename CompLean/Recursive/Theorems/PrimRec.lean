@@ -55,10 +55,6 @@ theorem pred : Prim 1 pred' :=
   unfold pred' π
   induction v 0 <;> rfl
 
-theorem neg : Prim 1 neg' := sorry
-
-theorem sgn : Prim 1 sgn' := sorry
-
 theorem add : Prim 2 add' := by
   have g : Prim 1 (fun v => v 0) := Prim.proj 0
   have h : Prim 3 (fun v => v 1 + 1) := comp₁ Nat.succ Prim.succ (Prim.proj 1)
@@ -104,21 +100,35 @@ theorem sub : Prim 2 sub' := by
 
 theorem max : Prim 2 max' := by
   -- max(x, y) = add(x, sub(y, x))
-  have f : Prim 2 (fun v => Nat.add (v 0) (Nat.sub (v 1) (v 0))) :=
+  have : Prim 2 (fun v => Nat.add (v 0) (Nat.sub (v 1) (v 0))) :=
     comp₂' Nat.add Prim.add (Prim.proj 0) (comp₂' Nat.sub Prim.sub (Prim.proj 1) (Prim.proj 0))
-  refine of_eq f ?_
-  grind [max']
+  unfold max'
+  grind
 
 theorem min : Prim 2 min' := by
   -- min(x, y) = sub(x, sub(x, y))
-  have f : Prim 2 (fun v => Nat.sub (v 0) (Nat.sub (v 0) (v 1))) :=
-    comp₂' Nat.sub Prim.sub (Prim.proj 0) (comp₂' Nat.sub Prim.sub (Prim.proj 0) (Prim.proj 1))
-  refine of_eq f ?_
-  grind [min']
+  have : Prim 2 (fun v => Nat.sub (v 0) (Nat.sub (v 0) (v 1))) :=
+    comp₂' Nat.sub Prim.sub (Prim.proj _) Prim.sub
+  unfold min'
+  grind
 
-theorem dist : Prim 2 dist' := sorry
+theorem dist : Prim 2 dist' :=
+  -- dist(x, y) = max(sub(x, y), sub(y, x))
+  comp₂' _ Prim.max Prim.sub (comp₂' _ Prim.sub (Prim.proj _) (Prim.proj _))
 
-theorem eq : Prim 2 eq' := sorry
+theorem neg : Prim 1 neg' :=
+  -- neg(x) = 1 - x ("is zero")
+  comp₂' _ Prim.sub (Prim.const _) (Prim.proj _)
+
+theorem sgn : Prim 1 sgn' :=
+  -- sgn(x) = 1 - (1 - x) = 1 - neg(x)
+  comp₂' _ Prim.sub (Prim.const _) neg
+
+theorem eq : Prim 2 eq' := by
+  -- eq(x, y) = neg(dist(x, y))
+  have : Prim 2 (fun v => 1 - Nat.max _ _) := comp₂' _ Prim.sub (Prim.const _) dist
+  unfold eq'
+  grind
 
 theorem pow : Prim 2 pow' := sorry
 
