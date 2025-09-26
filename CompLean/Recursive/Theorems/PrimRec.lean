@@ -109,7 +109,9 @@ theorem min : Prim 2 min' := by
   refine of_eq f ?_
   grind [min']
 
-theorem dist : Prim 2 dist' := sorry
+-- dist(x, y) = max(sub(x, y), sub(y, x))
+theorem dist : Prim 2 dist' :=
+  comp₂' Nat.max Prim.max (comp₂' Nat.sub Prim.sub (Prim.proj 0) (Prim.proj 1)) (comp₂' Nat.sub Prim.sub (Prim.proj 1) (Prim.proj 0))
 
 theorem eq : Prim 2 eq' := sorry
 
