@@ -101,26 +101,26 @@ theorem max : Prim 2 max' := by
 theorem min : Prim 2 min' := by
   -- min(x, y) = sub(x, sub(x, y))
   have f : Prim 2 (fun v => Nat.sub (v 0) (Nat.sub (v 0) (v 1))) :=
-    comp₂' Nat.sub Prim.sub (Prim.proj 0) Prim.sub
+    comp₂' Nat.sub Prim.sub (Prim.proj _) Prim.sub
   unfold min'
   grind
 
 theorem dist : Prim 2 dist' :=
   -- dist(x, y) = max(sub(x, y), sub(y, x))
-  comp₂' Nat.max Prim.max Prim.sub (comp₂' Nat.sub Prim.sub (Prim.proj 1) (Prim.proj 0))
+  comp₂' Nat.max Prim.max Prim.sub (comp₂' Nat.sub Prim.sub (Prim.proj _) (Prim.proj _))
 
 theorem neg : Prim 1 neg' :=
   -- neg(x) = 1 - x ("is zero")
-  comp₂' Nat.sub Prim.sub (Prim.const 1) (Prim.proj 0)
+  comp₂' Nat.sub Prim.sub (Prim.const _) (Prim.proj _)
 
 theorem sgn : Prim 1 sgn' :=
   -- sgn(x) = 1 - (1 - x) = 1 - neg(x)
-  comp₂' Nat.sub Prim.sub (Prim.const 1) neg
+  comp₂' Nat.sub Prim.sub (Prim.const _) neg
 
 theorem eq : Prim 2 eq' := by
   -- eq(x, y) = neg(dist(x, y))
   have f : Prim 2 (fun v => Nat.sub 1 (Nat.max (v 0 - v 1) (v 1 - v 0))) :=
-    comp₂' Nat.sub Prim.sub (Prim.const 1) dist
+    comp₂' Nat.sub Prim.sub (Prim.const _) dist
   unfold eq'
   grind
 
