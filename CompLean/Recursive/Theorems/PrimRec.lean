@@ -55,10 +55,6 @@ theorem pred : Prim 1 pred' :=
   unfold pred' π
   induction v 0 <;> rfl
 
-theorem neg : Prim 1 neg' := sorry
-
-theorem sgn : Prim 1 sgn' := sorry
-
 theorem factorial : Prim 1 factorial' := sorry
 
 theorem add : Prim 2 add' := by
@@ -112,6 +108,14 @@ theorem min : Prim 2 min' := by
 -- dist(x, y) = max(sub(x, y), sub(y, x))
 theorem dist : Prim 2 dist' :=
   comp₂' Nat.max Prim.max (comp₂' Nat.sub Prim.sub (Prim.proj 0) (Prim.proj 1)) (comp₂' Nat.sub Prim.sub (Prim.proj 1) (Prim.proj 0))
+
+-- neg(x) = 1 - x
+theorem neg : Prim 1 neg' :=
+  comp₂' Nat.sub Prim.sub (Prim.const 1) (Prim.proj 0)
+
+-- sgn(x) = 1 - (1 - x) = 1 - neg(x)
+theorem sgn : Prim 1 sgn' :=
+  comp₂' Nat.sub Prim.sub (Prim.const 1) neg
 
 theorem eq : Prim 2 eq' := sorry
 
