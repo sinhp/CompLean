@@ -59,8 +59,6 @@ theorem neg : Prim 1 neg' := sorry
 
 theorem sgn : Prim 1 sgn' := sorry
 
-theorem factorial : Prim 1 factorial' := sorry
-
 theorem add : Prim 2 add' := by
   have g : Prim 1 (fun v => v 0) := Prim.proj 0
   have h : Prim 3 (fun v => v 1 + 1) := comp₁ Nat.succ Prim.succ (Prim.proj 1)
@@ -82,6 +80,15 @@ theorem mul : Prim 2 mul' := by
   induction p 0 with
   | zero => noncomm_ring
   | succ => simp_all; noncomm_ring
+
+theorem factorial : Prim 1 factorial' := by
+  have g : Prim 0 _ := Prim.const 1
+  have h : Prim 2 _ := comp₂' _ Prim.mul (comp₁ _ Prim.succ (Prim.proj 0)) (Prim.proj 1)
+  have f := Prim.prec g h
+  refine of_eq f ?_
+  unfold factorial'
+  intro p
+  induction p 0 <;> aesop
 
 theorem sub : Prim 2 sub' := by
   have g : Prim 1 (fun v => v 0) := Prim.proj 0
