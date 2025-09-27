@@ -109,15 +109,18 @@ theorem dist : Prim 2 dist' :=
   -- dist(x, y) = max(sub(x, y), sub(y, x))
   comp₂' Nat.max Prim.max Prim.sub (comp₂' Nat.sub Prim.sub (Prim.proj 1) (Prim.proj 0))
 
--- neg(x) = 1 - x
 theorem neg : Prim 1 neg' :=
+  -- neg(x) = 1 - x ("is zero")
   comp₂' Nat.sub Prim.sub (Prim.const 1) (Prim.proj 0)
 
--- sgn(x) = 1 - (1 - x) = 1 - neg(x)
 theorem sgn : Prim 1 sgn' :=
+  -- sgn(x) = 1 - (1 - x) = 1 - neg(x)
   comp₂' Nat.sub Prim.sub (Prim.const 1) neg
 
-theorem eq : Prim 2 eq' := sorry
+#eval neg' (dist' (1 <:> 2))
+theorem eq : Prim 2 eq' :=
+  -- eq(x, y) = neg(dist(x, y))
+  sorry
 
 theorem pow : Prim 2 pow' := sorry
 
