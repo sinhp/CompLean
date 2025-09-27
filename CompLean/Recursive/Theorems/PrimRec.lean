@@ -95,15 +95,15 @@ theorem max : Prim 2 max' := by
   -- max(x, y) = add(x, sub(y, x))
   have f : Prim 2 (fun v => Nat.add (v 0) (Nat.sub (v 1) (v 0))) :=
     comp₂' Nat.add Prim.add (Prim.proj 0) (comp₂' Nat.sub Prim.sub (Prim.proj 1) (Prim.proj 0))
-  refine of_eq f ?_
-  grind [max']
+  unfold max'
+  grind
 
 theorem min : Prim 2 min' := by
   -- min(x, y) = sub(x, sub(x, y))
   have f : Prim 2 (fun v => Nat.sub (v 0) (Nat.sub (v 0) (v 1))) :=
     comp₂' Nat.sub Prim.sub (Prim.proj 0) Prim.sub
-  refine of_eq f ?_
-  grind [min']
+  unfold min'
+  grind
 
 theorem dist : Prim 2 dist' :=
   -- dist(x, y) = max(sub(x, y), sub(y, x))
