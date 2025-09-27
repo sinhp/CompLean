@@ -101,13 +101,13 @@ theorem max : Prim 2 max' := by
 theorem min : Prim 2 min' := by
   -- min(x, y) = sub(x, sub(x, y))
   have f : Prim 2 (fun v => Nat.sub (v 0) (Nat.sub (v 0) (v 1))) :=
-    comp₂' Nat.sub Prim.sub (Prim.proj 0) (comp₂' Nat.sub Prim.sub (Prim.proj 0) (Prim.proj 1))
+    comp₂' Nat.sub Prim.sub (Prim.proj 0) Prim.sub
   refine of_eq f ?_
   grind [min']
 
--- dist(x, y) = max(sub(x, y), sub(y, x))
 theorem dist : Prim 2 dist' :=
-  comp₂' Nat.max Prim.max (comp₂' Nat.sub Prim.sub (Prim.proj 0) (Prim.proj 1)) (comp₂' Nat.sub Prim.sub (Prim.proj 1) (Prim.proj 0))
+  -- dist(x, y) = max(sub(x, y), sub(y, x))
+  comp₂' Nat.max Prim.max Prim.sub (comp₂' Nat.sub Prim.sub (Prim.proj 1) (Prim.proj 0))
 
 -- neg(x) = 1 - x
 theorem neg : Prim 1 neg' :=
