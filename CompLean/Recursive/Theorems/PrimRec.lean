@@ -117,10 +117,12 @@ theorem sgn : Prim 1 sgn' :=
   -- sgn(x) = 1 - (1 - x) = 1 - neg(x)
   comp₂' Nat.sub Prim.sub (Prim.const 1) neg
 
-#eval neg' (dist' (1 <:> 2))
-theorem eq : Prim 2 eq' :=
+theorem eq : Prim 2 eq' := by
   -- eq(x, y) = neg(dist(x, y))
-  sorry
+  have f : Prim 2 (fun v => Nat.sub 1 (Nat.max (v 0 - v 1) (v 1 - v 0))) :=
+    comp₂' Nat.sub Prim.sub (Prim.const 1) dist
+  unfold eq'
+  grind
 
 theorem pow : Prim 2 pow' := sorry
 
