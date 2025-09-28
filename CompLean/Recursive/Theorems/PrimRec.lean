@@ -50,10 +50,19 @@ theorem prec' {n f g h} (f_prim : Prim n f) (g_prim : Prim n g) (h_prim : Prim (
     Prim n fun v => (f v).rec (g v) fun y IH : ℕ => h (y <:> IH <:> v) := by
   simpa using comp_vec_fun (prec g_prim h_prim) (f_prim.cons vec_fun_id)
 
-theorem pred : Prim 1 pred' :=
-  (prec' (proj 0) (const 0) (proj 0)).of_eq fun v => by
-  unfold pred' π
-  induction v 0 <;> rfl
+theorem pred : Prim 1 pred' := by
+  have g : Prim 0 _ := Prim.const 0
+  have h : Prim 2 _ := Prim.proj 0
+  have f := Prim.prec g h
+  refine f.of_eq ?_
+  unfold pred'
+  intro p
+  induction p 0 <;> rfl
+
+theorem pred_minimal : Prim 1 pred' := (prec zero (proj 0)).of_eq <| by
+  unfold pred'
+  intro p
+  induction p 0 <;> rfl
 
 theorem neg : Prim 1 neg' := sorry
 
@@ -75,6 +84,13 @@ theorem mul : Prim 2 mul' := by
   have h : Prim 3 (fun v => v 1 + v 2) := comp₂' (fun x y => x + y) Prim.add (Prim.proj 1) (Prim.proj 2)
   have f := Prim.prec g h
   refine of_eq f ?_
+  unfold mul'
+  intro p
+  induction p 0 with
+  | zero => noncomm_ring
+  | succ => simp_all; noncomm_ring
+
+theorem mul_minimal : Prim 2 mul' := (prec (const 0) (comp₂' _ add (proj 1) (proj 2))).of_eq <| by
   unfold mul'
   intro p
   induction p 0 with
