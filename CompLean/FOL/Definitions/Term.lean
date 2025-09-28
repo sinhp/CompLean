@@ -23,21 +23,33 @@ inductive Term (I : Type u') : Type max u u'
   | op {n : Arity} (_m : L.Ops n) (_ts : Fin n → Term I) : Term I
 export Term (var op)
 
-variable {I : Type u'}
+variable {L : Lang.{u, v}} {I : Type u'}
 
-variable {L : Lang.{u, v}}
+/-- If the equality on the type of variables and the type of operation symbols are decidable,
+then the equality on terms is also decidable. -/
+instance instDecidableEq [DecidableEq I] [∀ n, DecidableEq (L.Ops n)] : DecidableEq (L.Term I)
+  | .var a, .var b => decidable_of_iff (a = b) <| by simp
+  | @Term.op _ _ m f xs, @Term.op _ _ n g ys =>
+      if h : m = n then
+        letI : DecidableEq (L.Term I) := instDecidableEq
+        decidable_of_iff (f = h ▸ g ∧ ∀ i : Fin m, xs i = ys (Fin.cast h i)) <| by
+          subst h
+          simp [funext_iff]
+      else
+        .isFalse <| by simp [h]
+  | .var _, .op _ _ | .op _ _, .var _ => .isFalse <| by simp
 
 /-- A constant symbol can be seen as a term. -/
 def Constants.term (c : L.Constants) : L.Term I :=
   op c default
 
 /-- Applies a unary function to a term. -/
-def Ops.apply₁ (f : L.Ops 1) (t : L.Term I) : L.Term I :=
-  op f ![t]
+def Ops.apply₁ (m : L.Ops 1) (t : L.Term I) : L.Term I :=
+  op m ![t]
 
 /-- Applies a binary function to two terms. -/
-def Ops.apply₂ (f : L.Ops 2) (t₁ t₂ : L.Term I) : L.Term I :=
-  op f ![t₁, t₂]
+def Ops.apply₂ (m : L.Ops 2) (t₁ t₂ : L.Term I) : L.Term I :=
+  op m ![t₁, t₂]
 
 /-- If the variables are inhabited, then the terms are also inhabited. -/
 instance inhabitedOfVar [Inhabited I] : Inhabited (L.Term I) :=

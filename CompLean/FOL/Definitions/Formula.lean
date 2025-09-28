@@ -227,8 +227,8 @@ def relabel {n : ℕ} (g : I → J ⊕ (Fin n)) {k} (φ : L.BdForm I k) : L.BdFo
 
 end BdForm
 
-/-- `νn` is notation for the `n`-th free variable of a bounded formula. -/
-scoped[FOL] prefix:arg "ν" => FOL.Lang.Term.var ∘ Sum.inr
+/-- `&n` is notation for the `n`-th free variable of a bounded formula. -/
+scoped[FOL] prefix:arg "?" => FOL.Lang.Term.var ∘ Sum.inr
 
 @[inherit_doc] scoped[FOL] infixl:88 " =' " => FOL.Lang.Term.bdEqual
 
@@ -264,27 +264,27 @@ variable (r : L.Rels 2)
 
 /-- The sentence indicating that a basic relation symbol is reflexive. -/
 protected def reflexive : L.Sentence :=
-  ∀'r.bdForm₂ (ν 0) ν 0
+  ∀' r.bdForm₂ ?0 ?0 -- read this as "for all x, r(x, x)"
 
 /-- The sentence indicating that a basic relation symbol is irreflexive. -/
 protected def irreflexive : L.Sentence :=
-  ∀'∼(r.bdForm₂ (ν 0) ν 0)
+  ∀' ∼(r.bdForm₂ ?0 ?0)
 
 /-- The sentence indicating that a basic relation symbol is symmetric. -/
 protected def symmetric : L.Sentence :=
-  ∀'∀'(r.bdForm₂ (ν 0) ν 1 ⟹ r.bdForm₂ (ν 1) ν 0)
+  ∀'∀' (r.bdForm₂ ?0 ?1 ⟹ r.bdForm₂ ?1 ?0)
 
 /-- The sentence indicating that a basic relation symbol is antisymmetric. -/
 protected def antisymmetric : L.Sentence :=
-  ∀'∀'(r.bdForm₂ (ν 0) ν 1 ⟹ r.bdForm₂ (ν 1) ν 0 ⟹ Term.bdEqual (ν 0) ν 1)
+  ∀'∀' (r.bdForm₂ ?0 ?1 ⟹ r.bdForm₂ ?1 ?0 ⟹ Term.bdEqual ?0 ?1)
 
 /-- The sentence indicating that a basic relation symbol is transitive. -/
 protected def transitive : L.Sentence :=
-  ∀'∀'∀'(r.bdForm₂ (ν 0) (ν 1) ⟹ r.bdForm₂ (ν 1) (ν 2) ⟹ r.bdForm₂ (ν 0) (ν 2))
+  ∀'∀'∀' (r.bdForm₂ ?0 ?1 ⟹ r.bdForm₂ ?1 ?2 ⟹ r.bdForm₂ ?0 ?2)
 
 /-- The sentence indicating that a basic relation symbol is total. -/
 protected def total : L.Sentence :=
-  ∀'∀'(r.bdForm₂ (ν 0) (ν 1) ⊔ r.bdForm₂ (ν 1) (ν 0))
+  ∀'∀' (r.bdForm₂ ?0 ?1 ⊔ r.bdForm₂ ?1 ?0)
 
 end Rels
 

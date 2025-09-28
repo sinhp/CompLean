@@ -10,7 +10,7 @@ import CompLean.FOL.Definitions.Theory
 # Peano Arithmetic
 -/
 
-variable {V : Type*} -- The type of variables
+variable {I : Type u'} -- The type of variables
 
 namespace FOL
 
@@ -52,19 +52,19 @@ abbrev addOp : peano.Ops 2 := add
 of `PeanoOps 2` -/
 abbrev mulOp : peano.Ops 2 := mul
 
-variable {t t₁ t₂ : peano.Term V}
+variable {t t₁ t₂ : peano.Term I}
 
-instance : Zero (peano.Term V) where
+instance : Zero (peano.Term I) where
   zero := Constants.term .zero
 
-instance : Add (peano.Term V) where
+instance : Add (peano.Term I) where
   add := Ops.apply₂ .add
 
-instance : Mul (peano.Term V) where
+instance : Mul (peano.Term I) where
   mul := Ops.apply₂ .mul
 
 /-- Addition of a term `t` to itself `n` times, `nsmulRec n a = a+a+...+a`. -/
-instance : SMul ℕ (peano.Term V) where
+instance : SMul ℕ (peano.Term I) where
   smul := nsmulRec
 
 instance : Fintype peano.Symbols :=
@@ -88,10 +88,10 @@ instance : Fintype peano.Symbols :=
 
 It is defined via choice, so the result only makes sense when the structure satisfies
 commutativity (see `realize_sum`). -/
-noncomputable def sum {β : Type*} (s : Finset β) (f : β → peano.Term V) : peano.Term V :=
+noncomputable def sum {β : Type*} (s : Finset β) (f : β → peano.Term I) : peano.Term I :=
   (s.toList.map f).sum
 
-variable {M : Type*} {v : V → M}
+variable {M : Type*} {v : I → M}
 
 section
 
@@ -154,22 +154,19 @@ inductive RobinsonAxioms : Type
 
 @[simp]
 def RobinsonAxioms.toSentence : RobinsonAxioms → Lang.peano.Sentence
-  | .succ_ne_zero => ∀' ∼(succOp.apply₁ (ν 0) =' 0)
-  | .eq_zero_or_eq_succ_pred => ∀' ∃' (∼(ν 0 =' 0) ⟹  succOp.apply₁ (ν 1) =' ν 0)
-  | .succ_inj => ∀' ∀' (succOp.apply₁ (ν 0) =' succOp.apply₁ (ν 1) ⟹ ν 0 =' ν 1)
-  | .add_zero => ∀' ((ν 0 + 0) =' ν 0)
-  | .add_succ => ∀' ∀' ((ν 0 + succOp.apply₁ (ν 1)) =' succOp.apply₁ (ν 0 + ν 1))
-  | .mul_zero => ∀' ((ν 0 * 0) =' 0)
-  | .mul_succ => ∀' ∀' ((ν 0 * succOp.apply₁ (ν 1)) =' (ν 0 * ν 1 + ν 0))
+  | .succ_ne_zero => ∀' ∼(succOp.apply₁ ?0 =' 0)
+  | .eq_zero_or_eq_succ_pred => ∀' ∃' (∼(?0 =' 0) ⟹  succOp.apply₁ (?1) =' ?0)
+  | .succ_inj => ∀' ∀' (succOp.apply₁ (?0) =' succOp.apply₁ (?1) ⟹ ?0 =' ?1)
+  | .add_zero => ∀' ((?0 + 0) =' ?0)
+  | .add_succ => ∀' ∀' ((?0 + succOp.apply₁ (?1)) =' succOp.apply₁ (?0 + ?1))
+  | .mul_zero => ∀' ((?0 * 0) =' 0)
+  | .mul_succ => ∀' ∀' ((?0 * succOp.apply₁ (?1)) =' (?0 * ?1 + ?0))
 
 /-- The first order theory of fields, as a theory over the language of rings -/
 def Lang.Theory.robinson : peano.Theory :=
   Set.range RobinsonAxioms.toSentence
 
 -- Prove the following 24 facts in the theory of Robinson arithmetic:
-
-
-
 
 
 end FOL
