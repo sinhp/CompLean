@@ -55,7 +55,14 @@ theorem pred : Prim 1 pred' :=
   unfold pred' π
   induction v 0 <;> rfl
 
-theorem neg : Prim 1 neg' := sorry
+theorem neg : Prim 1 neg' := by
+  have g : Prim 0 _ := Prim.const 1
+  have h : Prim 2 _ := Prim.const 0
+  have f := Prim.prec g h
+  refine of_eq f ?_
+  unfold neg'
+  intro p
+  induction p 0 <;> aesop
 
 theorem sgn : Prim 1 sgn' := sorry
 
@@ -116,7 +123,12 @@ theorem min : Prim 2 min' := by
   refine of_eq f ?_
   grind [min']
 
-theorem dist : Prim 2 dist' := sorry
+theorem dist : Prim 2 dist' := by
+  -- dist(x, y) = add(sub(x, y), sub(y, x))
+  have f : Prim 2 (fun v => Nat.add (Nat.sub (v 0) (v 1)) (Nat.sub (v 1) (v 0))) :=
+    comp₂' Nat.add Prim.add (comp₂' Nat.sub Prim.sub (Prim.proj 0) (Prim.proj 1)) (comp₂' Nat.sub Prim.sub (Prim.proj 1) (Prim.proj 0))
+  refine of_eq f ?_
+  grind [dist']
 
 theorem eq : Prim 2 eq' := sorry
 
